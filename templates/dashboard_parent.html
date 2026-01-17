@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Orang Tua</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #e3f2fd; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        .report-card { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Dashboard Orang Tua</h1>
+        <a href="{{ url_for('login') }}">Keluar</a>
+    </div>
+
+    <div class="report-card">
+        <h2>Progress Anak</h2>
+        <p>Status: <strong>Sedang Belajar Level 1</strong></p>
+        <ul>
+            <li>Level 1 (b vs d): <span style="color: orange;">In Progress</span></li>
+            <li>Level 2 (p vs q): <span style="color: grey;">Terkunci</span></li>
+        </ul>
+        <p><em>Halaman ini masih statis untuk prototype.</em></p>
+    </div>
+</body>
+</html>

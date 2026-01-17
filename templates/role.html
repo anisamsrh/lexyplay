@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LexyPlay ID - Ayo Mulai!</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "brand": "#712d85",
+                        "brand-light": "#a345bd",
+                        "brand-dark": "#4a1d57",
+                        "sci-fi-blue": "#00f2ff",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --brand-main: #712d85;
+            --sci-fi-glow: rgba(0, 242, 255, 0.4);
+            --brand-glow: rgba(113, 45, 133, 0.6);
+        }
+        .hangar-bg {
+            background: radial-gradient(circle at center, rgba(113, 45, 133, 0.2) 0%, rgba(26, 11, 35, 0.95) 100%),
+                        url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+        }
+        .robotic-frame {
+            position: relative;
+            border: 3px solid rgba(113, 45, 133, 0.6);
+            box-shadow: 0 0 25px var(--brand-glow), inset 0 0 15px var(--brand-glow);
+        }
+        .robotic-frame::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 2px solid #a345bd;
+            border-radius: 50%;
+            clip-path: polygon(0 0, 20% 0, 20% 100%, 0 100%, 0 80%, 100% 80%, 100% 100%, 80% 100%, 80% 0, 100% 0, 100% 20%, 0 20%);
+            opacity: 0.6;
+        }
+        .glass-panel {
+            background: rgba(113, 45, 133, 0.2);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .floating-icon {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+        }
+    </style>
+<style>
+        body {
+            min-height: max(844px, 100dvh);
+            background-color: #1a0b23;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display overflow-hidden m-0 p-0 antialiased text-white">
+<div class="hangar-bg relative flex min-h-screen w-full flex-col items-center justify-between py-10 px-6">
+<div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+<div class="absolute top-20 left-[-10%] w-64 h-64 bg-brand/10 rounded-full blur-[80px]"></div>
+<div class="absolute bottom-20 right-[-10%] w-64 h-64 bg-brand-light/10 rounded-full blur-[80px]"></div>
+</div>
+<div class="relative z-20 text-center space-y-4">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 bg-brand/40 border border-brand-light/40 rounded-full backdrop-blur-md">
+<span class="material-symbols-outlined text-[18px] text-sci-fi-blue">rocket_launch</span>
+<span class="text-[11px] font-extrabold tracking-[0.15em] uppercase text-white">Pilih Pemain LexyPlay ID</span>
+</div>
+<div class="space-y-1">
+<h1 class="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-brand-light">
+                    Ayo Mulai!
+                </h1>
+<p class="text-white/70 text-base font-medium">
+                    Siapa yang akan bermain hari ini?
+                </p>
+</div>
+</div>
+
+<div class="relative z-20 flex flex-col gap-10 w-full items-center">
+
+<div class="flex flex-col items-center">
+    <form action="{{ url_for('set_role') }}" method="POST">
+        <button type="submit" name="peran_user" value="anak" class="robotic-frame group relative flex h-48 w-48 items-center justify-center rounded-full bg-brand-dark/50 transition-all active:scale-90">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-brand/30 to-transparent opacity-60"></div>
+            <div class="absolute inset-3 border-2 border-brand-light/40 rounded-full border-dotted"></div>
+            <div class="relative flex flex-col items-center">
+                <span class="material-symbols-outlined text-8xl text-white floating-icon" style="font-variation-settings: 'FILL' 1, 'wght' 400">face_6</span>
+            </div>
+            <div class="absolute bottom-4 right-4 bg-green-400 w-5 h-5 rounded-full border-4 border-[#1a0b23] shadow-[0_0_15px_#4ade80]"></div>
+        </button>
+    </form>
+    <div class="mt-6 text-center">
+        <span class="block text-3xl font-black tracking-wide text-white drop-shadow-lg">Anak</span>
+        <span class="text-xs text-sci-fi-blue font-bold uppercase tracking-[0.2em] bg-sci-fi-blue/10 px-3 py-0.5 rounded-full mt-1 inline-block">Misi Aktif</span>
+    </div>
+</div>
+
+<div class="flex flex-col items-center">
+    <form action="{{ url_for('set_role') }}" method="POST">
+        <button type="submit" name="peran_user" value="orang_tua" class="robotic-frame group relative flex h-32 w-32 items-center justify-center rounded-full bg-brand-dark/30 transition-all active:scale-95">
+            <div class="absolute inset-2 border border-white/20 rounded-full"></div>
+            <div class="relative flex flex-col items-center">
+                <span class="material-symbols-outlined text-5xl text-white/90" style="font-variation-settings: 'FILL' 1">supervisor_account</span>
+            </div>
+        </button>
+    </form>
+    <div class="mt-4 text-center">
+        <span class="block text-xl font-bold tracking-normal text-white/90">Orang Tua</span>
+        <span class="text-[10px] text-white/50 font-semibold uppercase tracking-widest">Pengaturan &amp; Laporan</span>
+    </div>
+</div>
+
+</div>
+
+<div class="relative z-30 w-full max-w-sm px-4">
+<div class="glass-panel flex items-center justify-around px-2 py-4 rounded-3xl">
+
+<button class="flex flex-col items-center gap-1.5 px-4 opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-2xl">help</span>
+<span class="text-[10px] uppercase font-bold tracking-wider">Bantuan</span>
+</button>
+
+<div class="w-[1px] h-10 bg-white/10"></div>
+<button class="flex flex-col items-center gap-1.5 px-4 text-brand-light">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">language</span>
+<span class="text-[10px] uppercase font-bold tracking-wider">Bahasa</span>
+</button>
+<div class="w-[1px] h-10 bg-white/10"></div>
+<button class="flex flex-col items-center gap-1.5 px-4 opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-2xl">logout</span>
+<span class="text-[10px] uppercase font-bold tracking-wider">Keluar</span>
+</button>
+</div>
+<div class="mt-6 flex flex-col items-center gap-2">
+<div class="px-4 py-1 rounded-full border border-white/10 bg-white/5">
+<p class="text-[10px] font-mono text-white/40 uppercase tracking-[0.15em]">Sesi: REBOOT-712D85-01</p>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

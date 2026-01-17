@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>LexyPlay: Operation Reboot</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&amp;family=Quicksand:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        :root {
+            --brand-plum: #712d85;
+            --soft-plum: #8e44ad;
+            --deep-plum: #3d104a;
+            --neon-cyan: #00f2ff;
+            --toy-yellow: #ffd700;
+        }
+        /* Background dipindah ke Body agar full screen */
+        body {
+            background: radial-gradient(circle at center, var(--brand-plum) 0%, var(--deep-plum) 100%);
+            overscroll-behavior: none; /* Mencegah bounce effect di iOS */
+        }
+        .star-field {
+            background-image: radial-gradient(circle, white 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        /* Card transparansi */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .input-bubble {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .mission-btn {
+            background: linear-gradient(180deg, #ffd700 0%, #ff9900 100%);
+            box-shadow: 0 6px 0 #b36b00, 0 10px 20px rgba(0,0,0,0.3);
+            transition: all 0.1s ease;
+        }
+        .mission-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #b36b00, 0 5px 10px rgba(0,0,0,0.3);
+        }
+        .dyslexia-friendly {
+            letter-spacing: 0.05em;
+            word-spacing: 0.15em;
+            line-height: 1.4;
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["Quicksand", "sans-serif"],
+                        display: ["Orbitron", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+
+<body class="text-white font-sans h-dvh w-full overflow-hidden relative">
+
+    <div class="absolute inset-0 star-field opacity-20 pointer-events-none z-0"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-cyan-400/20 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-pink-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="relative z-10 w-full h-full flex flex-col justify-between p-6 md:p-12 lg:p-16">
+
+        <div class="flex flex-col items-center justify-center flex-grow-[2] w-full">
+            <div class="relative mb-6 md:mb-10 floating">
+                <div class="w-28 h-28 md:w-40 md:h-40 lg:w-48 lg:h-48 bg-[var(--soft-plum)] rounded-full border-4 border-white flex items-center justify-center shadow-xl">
+                    <div class="relative">
+                        <span class="material-symbols-outlined text-7xl md:text-8xl lg:text-9xl text-white fill-1">smart_toy</span>
+                        <div class="absolute -right-2 -bottom-2 bg-yellow-400 p-2 md:p-3 rounded-lg border-2 border-white rotate-12 shadow-lg">
+                            <span class="material-symbols-outlined text-2xl md:text-4xl text-purple-900">key</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <h2 class="font-display text-sm md:text-lg font-black text-cyan-300 mb-2 tracking-[0.2em] uppercase dyslexia-friendly">LexyPlay</h2>
+                <h1 class="font-display text-3xl md:text-5xl lg:text-6xl font-black text-white drop-shadow-lg leading-tight">OPERATION REBOOT</h1>
+            </div>
+        </div>
+
+        <div class="w-full max-w-xl mx-auto glass-panel rounded-[30px] p-6 md:p-10 mb-6 flex flex-col gap-5 md:gap-8">
+            
+            <div>
+                <label class="block font-bold text-sm md:text-xl mb-2 ml-1 text-white dyslexia-friendly shadow-black drop-shadow-md">Nama Agen:</label>
+                <div class="relative group">
+                    <div class="absolute left-5 top-1/2 -translate-y-1/2 text-purple-600 z-10">
+                        <span class="material-symbols-outlined text-3xl md:text-4xl">face_6</span>
+                    </div>
+                    <input class="w-full input-bubble border-none py-4 md:py-6 pl-16 pr-6 text-purple-900 font-bold text-lg md:text-2xl placeholder:text-purple-300 focus:ring-4 focus:ring-yellow-400 transition-all dyslexia-friendly" placeholder="Nama Kamu" type="text"/>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-bold text-sm md:text-xl mb-2 ml-1 text-white dyslexia-friendly shadow-black drop-shadow-md">Kata Sandi Rahasia:</label>
+                <div class="relative group">
+                    <div class="absolute left-5 top-1/2 -translate-y-1/2 text-purple-600 z-10">
+                        <span class="material-symbols-outlined text-3xl md:text-4xl">vpn_key</span>
+                    </div>
+                    <input class="w-full input-bubble border-none py-4 md:py-6 pl-16 pr-6 text-purple-900 font-bold text-lg md:text-2xl placeholder:text-purple-300 focus:ring-4 focus:ring-yellow-400 transition-all dyslexia-friendly" placeholder="••••••••" type="password"/>
+                </div>
+            </div>
+
+            <button onclick="window.location.href='{{ url_for('role') }}'" class="mission-btn w-full text-purple-900 font-display font-black text-xl md:text-3xl py-5 md:py-8 rounded-2xl md:rounded-3xl mt-2 dyslexia-friendly uppercase tracking-wide">
+                MASUK KE MISI
+            </button>
+
+        </div>
+
+        <div class="w-full flex flex-col items-center justify-end pb-4 md:pb-8 flex-grow-[1]">
+            <p class="text-white font-bold text-base md:text-xl dyslexia-friendly mb-6 md:mb-10 text-center">
+                Belum punya akun? 
+                <span class="text-cyan-300 underline underline-offset-4 cursor-pointer hover:text-white ml-2 font-extrabold">Daftar Sini!</span>
+            </p>
+            
+            <div class="flex justify-center gap-8 md:gap-16 opacity-70">
+                <button class="w-12 h-12 md:w-16 md:h-16 rounded-full border-2 border-dashed border-white flex items-center justify-center hover:bg-white/20 transition active:scale-95">
+                    <span class="material-symbols-outlined text-xl md:text-3xl">settings</span>
+                </button>
+                <button class="w-12 h-12 md:w-16 md:h-16 rounded-full border-2 border-dashed border-white flex items-center justify-center hover:bg-white/20 transition active:scale-95">
+                    <span class="material-symbols-outlined text-xl md:text-3xl">help</span>
+                </button>
+                <button class="w-12 h-12 md:w-16 md:h-16 rounded-full border-2 border-dashed border-white flex items-center justify-center hover:bg-white/20 transition active:scale-95">
+                    <span class="material-symbols-outlined text-xl md:text-3xl">volume_up</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

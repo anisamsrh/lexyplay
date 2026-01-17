@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Belajar</title>
+    <style>
+        body { font-family: 'Comic Sans MS', sans-serif; background-color: #fff9c4; text-align: center; }
+        .card { 
+            background: white; width: 200px; padding: 20px; margin: 20px; display: inline-block; 
+            border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;
+            border: 3px solid #ff9800;
+        }
+        .card:hover { transform: scale(1.05); background-color: #fff3e0; }
+        .btn-logout { margin-top: 50px; display: inline-block; text-decoration: none; color: red; font-weight: bold; }
+        h1 { color: #e65100; }
+    </style>
+</head>
+<body>
+    <h1>Halo! Mau belajar apa hari ini?</h1>
+    
+    <a href="{{ url_for('lesson', level_id=1) }}" style="text-decoration: none; color: black;">
+        <div class="card">
+            <h2 style="font-size: 50px; margin: 0;">b vs d</h2>
+            <p>Level 1</p>
+        </div>
+    </a>
+
+    <!-- Navigasi ke Lesson Level 2 -->
+    <a href="{{ url_for('lesson', level_id=2) }}" style="text-decoration: none; color: black;">
+        <div class="card">
+            <h2 style="font-size: 50px; margin: 0;">p vs q</h2>
+            <p>Level 2</p>
+        </div>
+    </a>
+
+    <br>
+    <a href="{{ url_for('login') }}" class="btn-logout">Keluar / Ganti Akun</a>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ lesson.title }}</title>
+    <style>
+        body { font-family: 'Comic Sans MS', sans-serif; text-align: center; background-color: #e8f5e9; padding-top: 50px; }
+        .lesson-container { background: white; max-width: 600px; margin: auto; padding: 40px; border-radius: 20px; border: 4px solid #4CAF50; }
+        .big-letter { font-size: 120px; color: #2e7d32; margin: 20px 0; }
+        .nav-buttons { margin-top: 30px; }
+        button { padding: 15px 30px; font-size: 20px; margin: 10px; border-radius: 10px; border: none; cursor: pointer; }
+        .btn-back { background-color: #ffcc80; }
+        .btn-next { background-color: #81c784; }
+    </style>
+</head>
+<body>
+
+    <div class="lesson-container">
+        <!-- Mengambil data dinamis dari Python (app.py) -->
+        <h1>{{ lesson.title }}</h1>
+        <p>{{ lesson.description }}</p>
+
+        <div class="big-letter">{{ lesson.content }}</div>
+
+        <div class="nav-buttons">
+            <!-- Tombol Kembali ke Dashboard -->
+            <a href="{{ url_for('dashboard_child') }}">
+                <button class="btn-back">🏠 Kembali</button>
+            </a>
+
+            <!-- Tombol Lanjut ke Level Berikutnya (Jika ada) -->
+            {% if lesson.next_level %}
+                <a href="{{ url_for('lesson', level_id=lesson.next_level) }}">
+                    <button class="btn-next">Lanjut ➡</button>
+                </a>
+            {% else %}
+                <button class="btn-next" onclick="alert('Selamat! Semua pelajaran selesai.')">🎉 Selesai</button>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
