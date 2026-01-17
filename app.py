@@ -23,22 +23,8 @@ lessons_data = {
 
 # --- ROUTES (Jalur Navigasi) ---
 
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    """
-    Halaman Login.
-    Logika sederhana: Jika username mengandung 'ortu', masuk ke dashboard orang tua.
-    Selain itu, masuk ke dashboard anak.
-    """
-    if request.method == 'POST':
-        username = request.form.get('username')
-        
-        # Logika routing sederhana untuk prototype
-        if 'ortu' in username.lower() or 'admin' in username.lower():
-            return redirect(url_for('dashboard_parent'))
-        else:
-            return redirect(url_for('dashboard_child'))
-            
+@app.route('/')
+def login():            
     return render_template('login.html')
 
 @app.route('/role')
@@ -86,6 +72,10 @@ def lesson(level_id):
         return "Pelajaran belum tersedia", 404
         
     return render_template('lesson.html', lesson=current_lesson)
+
+@app.route('/example-lesson')
+def example_lesson():            
+    return render_template('sample_quiz.html')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

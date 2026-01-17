@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LexyPlay: Misi Patroli</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: "#712d85",
+                        cyber: "#9d4edd",
+                        circuit: "#e0aaff",
+                        glow: "#ff9e00",
+                        metal: "#2d0e3d",
+                        softglow: "#ffcc33",
+                        panel: "rgba(113, 45, 133, 0.4)"
+                    },
+                    fontFamily: {
+                        sans: ["Nunito", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-sans antialiased bg-brand overflow-hidden text-white;
+                overscroll-behavior: none;
+                touch-action: none;
+            }
+        }
+        
+        /* BACKGROUND GLOBAL (FULL SCREEN & SEAMLESS) */
+        .global-bg {
+            background: radial-gradient(circle at 50% 50%, #712d85 0%, #3c096c 100%);
+            position: fixed; inset: 0; z-index: -2;
+        }
+        .circuit-pattern {
+            background-image: radial-gradient(circle, #9d4edd 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.15;
+            position: fixed; inset: 0; z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ANIMATED FLOOR (FULL WIDTH) */
+        .moving-floor {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 45vh; 
+            background: 
+                linear-gradient(transparent 50%, #9d4edd 50%),
+                linear-gradient(90deg, transparent 50%, rgba(157, 78, 221, 0.3) 50%);
+            background-size: 100% 40px, 40px 100%;
+            transform: perspective(400px) rotateX(60deg);
+            animation: moveGrid 2s linear infinite;
+            opacity: 0.3;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1), transparent);
+            pointer-events: none;
+            z-index: -1;
+        }
+        @keyframes moveGrid {
+            from { background-position: 0 0, 0 0; }
+            to { background-position: 0 40px, 0 0; }
+        }
+
+        /* UI COMPONENTS */
+        .metallic-panel {
+            background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border-radius: 24px;
+        }
+        
+        .glow-border {
+            box-shadow: 0 0 30px rgba(255, 158, 0, 0.4), inset 0 0 15px rgba(255, 158, 0, 0.1);
+            border-color: rgba(255, 158, 0, 0.6);
+        }
+
+        .squishy-btn {
+            @apply flex flex-col items-center justify-center transition-all duration-300 active:scale-95 hover:brightness-110 cursor-pointer select-none shadow-xl;
+        }
+
+        /* ANIMATIONS */
+        .challenge-card {
+            display: none; 
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .big-letter {
+            /* Responsif: Besar di HP, RAKSASA di iPad */
+            @apply text-8xl md:text-[10rem] font-black text-white drop-shadow-md transition-transform duration-200;
+        }
+        
+        canvas {
+            border-radius: 24px;
+            background: rgba(0,0,0,0.2);
+            box-shadow: inset 0 0 30px rgba(157, 78, 221, 0.3);
+            touch-action: none; 
+        }
+
+        /* Mascot & FX */
+        .robot-eye-glow { box-shadow: 0 0 10px #ff9e00; }
+        .blink { animation: blink 3s infinite; }
+        @keyframes blink { 0%, 48%, 52%, 100% { height: 12px; } 50% { height: 2px; } }
+        .mic-active { animation: pulse 1s infinite; color: #ff9e00; }
+        @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+    </style>
+</head>
+<body class="w-full h-dvh flex flex-col">
+
+    <div class="global-bg"></div>
+    <div class="circuit-pattern"></div>
+    <div class="moving-floor"></div>
+
+    <header class="flex justify-between items-center z-20 w-full px-4 pt-4 pb-2 md:px-12 md:pt-8 gap-4 md:gap-8 shrink-0">
+        <div class="flex items-center gap-3 metallic-panel p-2 md:p-3 pr-6 rounded-full shrink-0">
+            <div class="w-12 h-12 md:w-20 md:h-20 bg-slate-200 rounded-full border-4 border-slate-400 flex flex-col items-center justify-center shadow-lg relative overflow-hidden shrink-0">
+                <div class="absolute top-0 w-full h-1/2 bg-slate-300"></div>
+                <div class="flex gap-1.5 z-10">
+                    <div class="w-2 h-2.5 md:w-3 md:h-4 bg-glow rounded-full robot-eye-glow blink"></div>
+                    <div class="w-2 h-2.5 md:w-3 md:h-4 bg-glow rounded-full robot-eye-glow blink"></div>
+                </div>
+            </div>
+            <div class="leading-tight">
+                <div class="text-[10px] md:text-sm text-circuit font-bold uppercase tracking-widest">Energi</div>
+                <div class="text-xl md:text-3xl font-black text-white" id="energy-txt">0</div>
+            </div>
+        </div>
+
+        <div class="flex-1 max-w-xl mx-auto">
+            <div class="h-4 md:h-6 w-full bg-black/40 rounded-full border border-white/10 p-0.5 backdrop-blur-sm shadow-inner">
+                <div id="city-progress" class="h-full bg-gradient-to-r from-glow to-yellow-300 rounded-full w-0 transition-all duration-700 shadow-[0_0_15px_rgba(255,158,0,0.6)]"></div>
+            </div>
+        </div>
+
+        <button onclick="location.reload()" class="w-12 h-12 md:w-20 md:h-20 metallic-panel rounded-full flex items-center justify-center active:scale-95 text-circuit hover:text-white shrink-0">
+            <span class="material-symbols-outlined text-2xl md:text-4xl">refresh</span>
+        </button>
+    </header>
+
+
+    <main id="game-layer" class="flex-1 flex flex-col items-center justify-center relative z-10 w-full px-4 pb-8 md:pb-12">
+        
+        <div id="start-msg" class="text-center cursor-pointer animate-bounce flex flex-col items-center scale-100 md:scale-150 transition-transform">
+            <div class="w-28 h-28 mb-6 bg-glow rounded-[2rem] rotate-3 flex items-center justify-center shadow-[0_0_40px_rgba(255,158,0,0.6)] border-4 border-white/20">
+                <span class="material-symbols-outlined text-7xl text-white">play_arrow</span>
+            </div>
+            <h1 class="text-5xl font-black text-white drop-shadow-xl tracking-tight">MULAI MISI</h1>
+            <p class="text-circuit font-bold mt-3 text-xl tracking-widest">KETUK LAYAR</p>
+        </div>
+
+        <div id="challenge-visual" class="challenge-card">
+            <div class="metallic-panel px-8 py-3 mb-8 md:mb-16 border-glow md:px-12 md:py-6">
+                <h2 class="text-lg md:text-3xl font-bold text-center text-softglow uppercase tracking-widest">PILIH HURUF: <span id="visual-target" class="text-white text-3xl md:text-5xl font-black ml-3"></span></h2>
+            </div>
+            <div class="flex gap-6 md:gap-20">
+                <button onclick="checkVisual('b')" class="squishy-btn w-36 h-48 md:w-72 md:h-96 metallic-panel bg-white/5 hover:bg-white/10 border-white/30 rounded-3xl">
+                    <span class="big-letter text-circuit">b</span>
+                </button>
+                <button onclick="checkVisual('d')" class="squishy-btn w-36 h-48 md:w-72 md:h-96 metallic-panel bg-white/5 hover:bg-white/10 border-white/30 rounded-3xl">
+                    <span class="big-letter text-glow">d</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="challenge-audio" class="challenge-card">
+            <div class="metallic-panel p-6 md:p-12 w-full max-w-xs md:max-w-3xl flex flex-col items-center gap-8 md:gap-16 border-white/20">
+                
+                <button onclick="playTargetSound()" class="squishy-btn w-24 h-24 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-glow to-orange-600 shadow-2xl border-4 border-white/30 animate-pulse">
+                    <span class="material-symbols-outlined text-5xl md:text-8xl text-white">volume_up</span>
+                </button>
+                
+                <p class="text-center text-white/80 font-bold text-lg md:text-3xl">Dengarkan suaranya!</p>
+                
+                <div class="flex w-full gap-4 md:gap-12 mt-2">
+                    <button onclick="checkAudio('b')" class="flex-1 py-8 md:py-16 metallic-panel bg-white/5 hover:bg-brand/40 active:bg-brand transition-colors rounded-3xl">
+                        <span class="text-7xl md:text-[8rem] font-black text-white">b</span>
+                    </button>
+                    <button onclick="checkAudio('d')" class="flex-1 py-8 md:py-16 metallic-panel bg-white/5 hover:bg-brand/40 active:bg-brand transition-colors rounded-3xl">
+                        <span class="text-7xl md:text-[8rem] font-black text-white">d</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="challenge-trace" class="challenge-card">
+            <div class="flex items-center gap-4 mb-6 md:mb-12">
+                <span class="material-symbols-outlined text-circuit text-4xl md:text-7xl">draw</span>
+                <h2 class="text-3xl md:text-6xl font-black text-white">TULIS: <span id="trace-target" class="text-glow text-5xl md:text-8xl ml-4"></span></h2>
+            </div>
+            
+            <div class="relative p-2 md:p-4 metallic-panel glow-border rounded-[2rem]">
+                <canvas id="traceCanvas" width="500" height="500" class="bg-metal/50 w-[300px] h-[300px] md:w-[500px] md:h-[500px]"></canvas>
+            </div>
+
+            <div class="flex gap-6 md:gap-10 mt-8 md:mt-12">
+                <button onclick="clearCanvas()" class="px-8 py-4 md:px-12 md:py-6 rounded-2xl metallic-panel bg-red-900/30 border-red-400/30 text-red-200 font-bold text-lg md:text-2xl">
+                    Hapus
+                </button>
+                <button onclick="checkTrace()" class="px-10 py-4 md:px-16 md:py-6 rounded-2xl bg-gradient-to-r from-glow to-orange-500 text-white font-black shadow-lg hover:scale-105 transition-transform text-lg md:text-2xl tracking-wider">
+                    SELESAI!
+                </button>
+            </div>
+        </div>
+
+        <div id="challenge-speech" class="challenge-card text-center">
+            <h2 class="text-xl md:text-4xl font-bold text-circuit mb-4 uppercase tracking-widest">Katakan:</h2>
+            <div class="text-[8rem] md:text-[12rem] font-black text-white mb-10 md:mb-16 drop-shadow-[0_0_30px_rgba(255,255,255,0.4)] leading-none">
+                <span id="speech-target"></span>!
+            </div>
+            
+            <div class="relative">
+                <button id="mic-btn" class="squishy-btn w-32 h-32 md:w-56 md:h-56 rounded-[2.5rem] bg-metal border-4 border-glow shadow-[0_0_50px_rgba(255,158,0,0.3)] z-10 relative" onclick="activateMic()">
+                    <span id="mic-icon" class="material-symbols-outlined text-7xl md:text-9xl text-glow">mic</span>
+                </button>
+                <div class="absolute inset-0 bg-glow/20 rounded-[2.5rem] blur-2xl animate-pulse"></div>
+            </div>
+
+            <p id="speech-status" class="mt-8 text-white/60 font-bold bg-black/20 px-6 py-3 rounded-xl text-sm md:text-xl">
+                Ketuk Mic & Bicara...
+            </p>
+            
+            <button onclick="forceSuccess()" class="mt-8 text-xs md:text-sm text-white/20 uppercase tracking-widest p-4 hover:text-white">(Lewati / Debug)</button>
+        </div>
+
+    </main>
+
+    <div id="result-screen" class="fixed inset-0 z-50 bg-brand/95 backdrop-blur-xl hidden flex-col items-center justify-center p-6 text-center animate-fadeIn">
+        <div class="w-full max-w-sm md:max-w-2xl metallic-panel p-8 md:p-16 border-glow relative overflow-hidden rounded-[3rem]">
+            <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"></div>
+
+            <span class="material-symbols-outlined text-9xl md:text-[10rem] text-glow mb-6 icon-shadow" style="font-variation-settings: 'FILL' 1">emoji_events</span>
+            
+            <h1 class="text-4xl md:text-7xl font-black text-white mb-4">MISI SUKSES!</h1>
+            <p class="text-circuit font-bold mb-10 text-lg md:text-3xl">Kota berhasil dinyalakan kembali.</p>
+            
+            <div class="bg-black/20 rounded-3xl p-6 md:p-10 mb-12 border border-white/5">
+                <p class="text-sm md:text-xl uppercase tracking-widest text-white/60 mb-2">Akurasi Misi</p>
+                <h2 id="final-score" class="text-7xl md:text-9xl font-black text-white">100%</h2>
+            </div>
+
+            <button onclick="location.reload()" class="w-full py-5 md:py-8 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-black text-xl md:text-3xl shadow-xl hover:scale-105 transition-transform flex items-center justify-center gap-4">
+                <span class="material-symbols-outlined text-3xl md:text-5xl">replay</span>
+                MAIN LAGI
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME STATE ---
+        let score = 0;
+        let totalAttempts = 0;
+        let progress = 0; 
+        const MAX_PROGRESS = 4;
+        let currentTarget = ''; 
+        
+        // --- AUDIO ENGINE ---
+        const synth = window.speechSynthesis;
+        function speak(text) {
+            synth.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'id-ID';
+            utter.rate = 0.9; 
+            synth.speak(utter);
+        }
+
+        // --- FLOW ---
+        document.getElementById('start-msg').addEventListener('click', function() {
+            this.style.display = 'none';
+            gameLoop();
+        });
+
+        function gameLoop() {
+            if (progress >= MAX_PROGRESS) {
+                showResults();
+                return;
+            }
+
+            let type = progress % 4; 
+            currentTarget = Math.random() > 0.5 ? 'b' : 'd'; 
+
+            hideAllChallenges();
+            
+            setTimeout(() => {
+                if(type === 0) startVisualChallenge();
+                if(type === 1) startAudioChallenge();
+                if(type === 2) startTraceChallenge();
+                if(type === 3) startSpeechChallenge();
+            }, 500);
+        }
+
+        function hideAllChallenges() {
+            document.querySelectorAll('.challenge-card').forEach(el => el.style.display = 'none');
+        }
+
+        function updateProgress(isCorrect) {
+            totalAttempts++;
+            if (isCorrect) {
+                score++;
+                progress++;
+                document.getElementById('energy-txt').innerText = score;
+                
+                let percent = (progress / MAX_PROGRESS) * 100;
+                document.getElementById('city-progress').style.width = percent + "%";
+                
+                speak("Hebat!");
+                setTimeout(gameLoop, 1500); 
+            } else {
+                speak("Coba lagi!");
+                const activePanel = document.querySelector('.challenge-card[style*="flex"]');
+                if(activePanel) {
+                    activePanel.style.transform = "translateX(5px)";
+                    setTimeout(() => activePanel.style.transform = "translateX(-5px)", 50);
+                    setTimeout(() => activePanel.style.transform = "translateX(0)", 100);
+                }
+            }
+        }
+
+        // --- 1. VISUAL ---
+        function startVisualChallenge() {
+            document.getElementById('challenge-visual').style.display = 'flex';
+            document.getElementById('visual-target').innerText = currentTarget;
+            speak("Pilih huruf " + currentTarget);
+        }
+        function checkVisual(answer) {
+            answer === currentTarget ? updateProgress(true) : updateProgress(false);
+        }
+
+        // --- 2. AUDIO ---
+        function startAudioChallenge() {
+            document.getElementById('challenge-audio').style.display = 'flex';
+            setTimeout(playTargetSound, 800);
+        }
+        function playTargetSound() {
+            let sound = currentTarget === 'b' ? "Beh" : "Deh";
+            speak("Mana yang suaranya... " + sound + "?");
+        }
+        function checkAudio(answer) {
+            answer === currentTarget ? updateProgress(true) : updateProgress(false);
+        }
+
+        // --- 3. TRACE (Canvas) ---
+        const canvas = document.getElementById('traceCanvas');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+
+        function startTraceChallenge() {
+            document.getElementById('challenge-trace').style.display = 'flex';
+            document.getElementById('trace-target').innerText = currentTarget;
+            clearCanvas();
+            speak("Ayo tulis huruf " + currentTarget);
+        }
+
+        function startPosition(e) { painting = true; draw(e); }
+        function endPosition() { painting = false; ctx.beginPath(); }
+        
+        function draw(e) {
+            if (!painting) return;
+            e.preventDefault(); 
+            // Tebal kuas lebih besar agar terlihat jelas
+            ctx.lineWidth = 15; 
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#ff9e00'; 
+            
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            const x = (clientX - rect.left) * (canvas.width / rect.width);
+            const y = (clientY - rect.top) * (canvas.height / rect.height);
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', startPosition, {passive: false});
+        canvas.addEventListener('touchend', endPosition);
+        canvas.addEventListener('touchmove', draw, {passive: false});
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Font sangat besar untuk Canvas 500px
+            ctx.font = "bold 300px Nunito";
+            ctx.fillStyle = "rgba(255,255,255,0.05)";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(currentTarget, canvas.width/2, canvas.height/2 + 30);
+        }
+        function checkTrace() { updateProgress(true); }
+
+        // --- 4. SPEECH ---
+        function startSpeechChallenge() {
+            document.getElementById('challenge-speech').style.display = 'flex';
+            document.getElementById('speech-target').innerText = currentTarget;
+            document.getElementById('speech-status').innerText = "Ketuk Mic & Bicara...";
+            document.getElementById('mic-icon').classList.remove('mic-active');
+            speak("Coba katakan... " + (currentTarget === 'b' ? "Beh" : "Deh"));
+        }
+
+        function activateMic() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Browser tidak support. Gunakan tombol lewati.");
+                return;
+            }
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'id-ID';
+            
+            document.getElementById('mic-icon').classList.add('mic-active');
+            document.getElementById('speech-status').innerText = "Mendengarkan...";
+
+            recognition.onresult = function(event) {
+                document.getElementById('mic-icon').classList.remove('mic-active');
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                document.getElementById('speech-status').innerText = "Kamu bilang: " + transcript;
+
+                if (transcript.includes(currentTarget) || transcript.includes('be') || transcript.includes('de')) {
+                    updateProgress(true);
+                } else {
+                    speak("Belum tepat, coba lagi!");
+                }
+            };
+            recognition.onerror = function() {
+                document.getElementById('mic-icon').classList.remove('mic-active');
+                document.getElementById('speech-status').innerText = "Gagal mendengar.";
+            };
+            recognition.start();
+        }
+
+        function forceSuccess() { updateProgress(true); }
+
+        // --- RESULTS ---
+        function showResults() {
+            hideAllChallenges();
+            document.getElementById('game-layer').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'flex';
+            let accuracy = totalAttempts > 0 ? Math.round((score / totalAttempts) * 100) : 0;
+            document.getElementById('final-score').innerText = accuracy + "%";
+            speak("Misi Selesai! Kamu luar biasa!");
+        }
+    </script>
+</body>
+</html>
