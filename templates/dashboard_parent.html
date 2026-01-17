@@ -1,28 +1,210 @@
 <!DOCTYPE html>
-<html lang="id">
+<html class="dark" lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard Orang Tua</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>Laporan Orang Tua LexyPlay ID - iPad Air Optimized</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "hq-plum": "#712d85",
+                        "hq-dark": "#2d1235",
+                        "hq-neon": "#00f2ff",
+                        "hq-error": "#ff0066",
+                        "hq-warning": "#ffcc00",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"],
+                        "mono": ["Space Grotesk", "monospace"]
+                    },
+                    screens: {
+                        'ipad': '820px', // Khusus iPad Air width
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .tech-grid {
+                background-color: #712d85;
+                background-image: 
+                    linear-gradient(rgba(0, 242, 255, 0.1) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0, 242, 255, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+                background-position: center center;
+            }
+            .glass-hq {
+                @apply bg-[#2d1235]/80 backdrop-blur-md border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)];
+            }
+            .neon-border {
+                @apply border border-hq-neon/40 shadow-[0_0_10px_rgba(0,242,255,0.2)];
+            }
+            .glow-line {
+                filter: drop-shadow(0 0 4px #00f2ff);
+            }
+            .scanline {
+                background: linear-gradient(
+                    to bottom,
+                    rgba(18, 16, 16, 0) 50%,
+                    rgba(0, 0, 0, 0.1) 50%
+                );
+                background-size: 100% 4px;
+                pointer-events: none;
+            }
+        }
+    </style>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #e3f2fd; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; }
-        .report-card { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        body {
+            /* Pastikan body mengisi tinggi layar sepenuhnya */
+            min-height: 100vh;
+            background-color: #2d1235; /* Fallback color */
+        }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>Dashboard Orang Tua</h1>
-        <a href="{{ url_for('login') }}">Keluar</a>
-    </div>
+<body class="font-display text-white antialiased bg-hq-dark min-h-screen relative overflow-x-hidden">
 
-    <div class="report-card">
-        <h2>Progress Anak</h2>
-        <p>Status: <strong>Sedang Belajar Level 1</strong></p>
-        <ul>
-            <li>Level 1 (b vs d): <span style="color: orange;">In Progress</span></li>
-            <li>Level 2 (p vs q): <span style="color: grey;">Terkunci</span></li>
-        </ul>
-        <p><em>Halaman ini masih statis untuk prototype.</em></p>
+    <div class="fixed inset-0 tech-grid opacity-30 z-0"></div>
+    <div class="fixed inset-0 scanline z-50 pointer-events-none opacity-20"></div>
+
+    <div class="relative z-10 flex min-h-screen w-full flex-col">
+        
+        <header class="w-full max-w-5xl mx-auto px-6 pt-14 pb-6 md:px-10 md:pt-16">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-2 h-2 rounded-full bg-hq-neon animate-pulse"></span>
+                        <p class="text-[10px] md:text-xs font-mono font-bold uppercase tracking-[0.2em] text-hq-neon">Sistem Terhubung</p>
+                    </div>
+                    <h1 class="text-2xl md:text-4xl font-bold text-white tracking-tight uppercase font-mono">Pusat Kendali HQ</h1>
+                    <p class="text-[10px] md:text-sm font-medium text-white/40 uppercase tracking-widest mt-1">Laporan Orang Tua LexyPlay ID</p>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="h-10 w-10 md:h-14 md:w-14 rounded-lg border-2 border-hq-neon/30 p-0.5 overflow-hidden shadow-lg shadow-hq-neon/20">
+                        <img alt="Unit Avatar" class="h-full w-full object-cover rounded-sm grayscale-[0.2]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQsBBNo5WfINhW7E94InQbhEXmKVTw4BCotVLcWmo1JEKjaYsDs0IaVFkuoMxxF48ForvOYGhFDmoh64Jadf1x3zTccCrUfCa28saqyLUrUJ-FINI7iuuJJTBDk2nx9eHLXe_hil-t-mqzndX-GkaQVwTafUFMeH89UibhBny-hPXN0NytJ9foUxwbdg9xgvD93QChD-YS2fdOBnF4lkXjusozzCpWQ4F5000XvSpHAnEUpIArDKcb-WfOLMnY8qlegj--qJUZUX8"/>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="relative flex-1 px-6 pb-32 space-y-6 w-full max-w-5xl mx-auto md:px-10">
+            
+            <div class="grid grid-cols-2 gap-4 md:gap-6">
+                <div class="glass-hq neon-border rounded-xl p-4 md:p-6 relative overflow-hidden flex flex-col justify-center">
+                    <div class="absolute top-0 right-0 p-2 opacity-20">
+                        <span class="material-symbols-outlined text-4xl md:text-6xl">schedule</span>
+                    </div>
+                    <div class="flex flex-col gap-1 z-10">
+                        <span class="text-[9px] md:text-xs font-mono font-bold uppercase tracking-widest text-hq-neon/70">Lama Belajar</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl md:text-4xl font-mono font-bold text-white">42:08</span>
+                            <span class="text-[8px] md:text-[10px] text-white/40 font-mono">JAM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-hq border border-white/10 rounded-xl p-4 md:p-6 relative overflow-hidden flex flex-col justify-center">
+                    <div class="absolute top-0 right-0 p-2 opacity-20">
+                        <span class="material-symbols-outlined text-4xl md:text-6xl">favorite</span>
+                    </div>
+                    <div class="flex flex-col gap-1 z-10">
+                        <span class="text-[9px] md:text-xs font-mono font-bold uppercase tracking-widest text-hq-warning">AKURASI DATA</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-2xl md:text-4xl font-mono font-bold text-white">88%</span>
+                            <span class="text-[8px] md:text-[10px] text-white/40 font-mono">VAL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="glass-hq rounded-2xl p-5 md:p-8 border border-white/5">
+                <div class="mb-4 flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-hq-neon text-sm md:text-base">bar_chart</span>
+                            <h3 class="font-mono font-bold text-sm md:text-lg text-white uppercase tracking-wider">Grafik Belajar</h3>
+                        </div>
+                        <p class="text-[10px] md:text-xs text-white/40 uppercase font-mono tracking-tight mt-0.5">Aktivitas minggu ini</p>
+                    </div>
+                    <div class="text-right bg-hq-neon/10 px-2 py-1 rounded border border-hq-neon/20">
+                        <span class="text-[10px] md:text-xs font-mono text-hq-neon font-bold">+12.4% OSC</span>
+                    </div>
+                </div>
+
+                <div class="relative h-36 md:h-56 flex items-end justify-between gap-2 md:gap-4 pt-4">
+                    <div class="absolute inset-0 flex flex-col justify-between py-1 pointer-events-none opacity-10 z-0">
+                        <div class="border-t border-white w-full"></div>
+                        <div class="border-t border-white w-full"></div>
+                        <div class="border-t border-white w-full"></div>
+                    </div>
+                    
+                    <div class="group relative h-[30%] w-full bg-white/5 rounded-sm hover:bg-hq-plum/30 transition-all duration-300 hover:scale-[1.02]"></div>
+                    <div class="group relative h-[50%] w-full bg-white/5 rounded-sm hover:bg-hq-plum/30 transition-all duration-300 hover:scale-[1.02]"></div>
+                    <div class="group relative h-[70%] w-full bg-hq-neon/20 border-t-2 border-hq-neon glow-line rounded-sm shadow-[0_0_15px_rgba(0,242,255,0.1)]"></div>
+                    <div class="group relative h-[45%] w-full bg-white/5 rounded-sm hover:bg-hq-plum/30 transition-all duration-300 hover:scale-[1.02]"></div>
+                    <div class="group relative h-[90%] w-full bg-hq-neon/20 border-t-2 border-hq-neon glow-line rounded-sm shadow-[0_0_15px_rgba(0,242,255,0.1)]"></div>
+                    <div class="group relative h-[60%] w-full bg-white/5 rounded-sm hover:bg-hq-plum/30 transition-all duration-300 hover:scale-[1.02]"></div>
+                    <div class="group relative h-[80%] w-full bg-white/5 rounded-sm hover:bg-hq-plum/30 transition-all duration-300 hover:scale-[1.02]"></div>
+                </div>
+                
+                <div class="mt-3 flex justify-between px-1 text-[8px] md:text-[10px] font-mono text-white/30 uppercase tracking-[0.3em]">
+                    <span>SN</span><span>SL</span><span>RB</span><span>KM</span><span>JM</span><span>SB</span><span>MG</span>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-1 md:col-span-2 flex items-center justify-between px-1">
+                    <h3 class="text-[10px] md:text-xs font-mono font-bold text-hq-neon/60 uppercase tracking-[0.25em]">Sistem Dipulihkan</h3>
+                </div>
+
+                <div class="glass-hq border-l-4 border-l-hq-neon rounded-r-xl rounded-l-sm p-4 flex items-center gap-4 hover:bg-white/5 transition-colors group cursor-pointer">
+                    <div class="flex h-11 w-11 md:h-14 md:w-14 shrink-0 items-center justify-center rounded bg-hq-plum/50 border border-hq-neon/30 text-hq-neon group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-2xl md:text-3xl">settings_voice</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-mono font-bold text-sm md:text-base text-white uppercase">Sistem Suara Aktif</h4>
+                        <p class="text-[10px] md:text-xs text-white/50 font-mono tracking-tight mt-0.5">Koneksi fonetik stabil (Bl-, Br-)</p>
+                    </div>
+                    <span class="material-symbols-outlined text-hq-neon/50">verified</span>
+                </div>
+
+                <div class="glass-hq border-l-4 border-l-hq-warning/50 rounded-r-xl rounded-l-sm p-4 flex items-center gap-4 hover:bg-white/5 transition-colors group cursor-pointer">
+                    <div class="flex h-11 w-11 md:h-14 md:w-14 shrink-0 items-center justify-center rounded bg-hq-plum/50 border border-white/10 text-hq-warning group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-2xl md:text-3xl">terminal</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-mono font-bold text-sm md:text-base text-white uppercase">Sistem Kata Pulih</h4>
+                        <p class="text-[10px] md:text-xs text-white/50 font-mono tracking-tight mt-0.5">Pencocokan pola: 85% komplit</p>
+                    </div>
+                    <span class="material-symbols-outlined text-white/20">pending</span>
+                </div>
+            </section>
+        </main>
+
+        <div class="fixed bottom-0 left-0 right-0 z-30 pb-6 pt-2 px-6">
+            <nav class="glass-hq border border-hq-neon/20 flex w-full max-w-md mx-auto items-center justify-around rounded-2xl p-2 shadow-2xl backdrop-blur-xl md:max-w-xl md:p-3">
+                <button class="flex flex-col items-center justify-center h-12 w-12 md:h-14 md:w-14 text-hq-neon transition-transform active:scale-95">
+                    <span class="material-symbols-outlined text-2xl md:text-3xl" style="font-variation-settings: 'FILL' 1">dashboard</span>
+                    <span class="text-[7px] md:text-[9px] font-mono font-bold mt-0.5 uppercase tracking-tighter">Dashboard</span>
+                </button>
+                <button class="flex flex-col items-center justify-center h-12 w-12 md:h-14 md:w-14 text-white/40 hover:text-white transition-colors active:scale-95">
+                    <span class="material-symbols-outlined text-2xl md:text-3xl">analytics</span>
+                    <span class="text-[7px] md:text-[9px] font-mono font-bold mt-0.5 uppercase tracking-tighter">Laporan</span>
+                </button>
+                <button class="flex flex-col items-center justify-center h-12 w-12 md:h-14 md:w-14 text-white/40 hover:text-white transition-colors active:scale-95">
+                    <span class="material-symbols-outlined text-2xl md:text-3xl">settings</span>
+                    <span class="text-[7px] md:text-[9px] font-mono font-bold mt-0.5 uppercase tracking-tighter">Pengaturan</span>
+                </button>
+            </nav>
+        </div>
+
     </div>
 </body>
 </html>
