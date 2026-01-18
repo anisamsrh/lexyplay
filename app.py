@@ -2,24 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# --- MOCK DATA (Data Palsu untuk Prototype) ---
-# Dalam aplikasi nyata, ini akan diambil dari database.
-lessons_data = {
-    1: {
-        "id": 1,
-        "title": "Mengenal Huruf b dan d",
-        "description": "Latihan membedakan bentuk huruf b (perut di depan) dan d (perut di belakang).",
-        "content": "b", # Contoh konten visual
-        "next_level": 2
-    },
-    2: {
-        "id": 2,
-        "title": "Mengenal Huruf p dan q",
-        "description": "Latihan membedakan bentuk huruf p dan q.",
-        "content": "p",
-        "next_level": None # Akhir dari demo
-    }
-}
 
 # --- ROUTES (Jalur Navigasi) ---
 
@@ -77,5 +59,14 @@ def lesson(level_id):
 def example_lesson():            
     return render_template('sample_quiz.html')
 
+@app.route('/map')
+def map():
+    return render_template('map.html')
+
+
+@app.route('/achievement')
+def achievement():
+    return render_template('achievement.html')
+    
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

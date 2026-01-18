@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Peta Misi - Operation Reboot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: "#712d85",
+                        cyber: "#9d4edd",
+                        circuit: "#e0aaff",
+                        glow: "#ff9e00",
+                        metal: "#2d0e3d",
+                        softglow: "#ffcc33",
+                        panel: "rgba(113, 45, 133, 0.4)",
+                        success: "#00f2ff",
+                        locked: "#2d0e3d"
+                    },
+                    fontFamily: {
+                        display: ["Nunito", "sans-serif"],
+                        sans: ["Nunito", "sans-serif"],
+                    },
+                    animation: {
+                        'float': 'floating 4s ease-in-out infinite',
+                        'morph': 'morph 8s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        floating: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        },
+                        morph: {
+                            '0%, 100%': { borderRadius: '42% 58% 70% 30% / 45% 45% 55% 55%' },
+                            '50%': { borderRadius: '50% 50% 30% 70% / 55% 55% 45% 45%' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 1, boxShadow: '0 0 30px #ff9e00' },
+                            '50%': { opacity: .8, boxShadow: '0 0 10px #ff9e00' },
+                        }
+                    }
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-sans antialiased bg-brand overflow-hidden;
+                -webkit-tap-highlight-color: transparent;
+            }
+        }
+        .command-console-bg {
+            background: radial-gradient(circle at 50% 50%, #712d85 0%, #3c096c 100%);
+            min-height: 100vh;
+        }
+        .circuit-pattern {
+            background-image: radial-gradient(circle, #9d4edd 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.15;
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        /* Style Dasar Panel */
+        .metallic-panel {
+            background: linear-gradient(145deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255,255,255,0.2);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.2), 0 8px 16px rgba(0,0,0,0.3);
+        }
+        
+        /* Level Node Styles */
+        .level-btn {
+            @apply w-20 h-20 rounded-full flex flex-col items-center justify-center transition-all duration-300 relative z-20;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        
+        .level-btn.completed {
+            @apply metallic-panel border-success text-success;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3), inset 0 0 10px rgba(0, 242, 255, 0.1);
+        }
+
+        .level-btn.active {
+            @apply bg-gradient-to-br from-glow to-orange-600 text-white border-4 border-white animate-morph;
+            box-shadow: 0 0 40px rgba(255, 158, 0, 0.6);
+            transform: scale(1.2);
+        }
+
+        .level-btn.locked {
+            @apply bg-metal border-gray-600 text-gray-500 grayscale opacity-80;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* Path Line (Garis Penghubung) */
+        .path-line {
+            @apply absolute w-1 bg-white/20 -z-10;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Zigzag Positioning Helpers */
+        .row-left { @apply justify-start pl-12; }
+        .row-center { @apply justify-center; }
+        .row-right { @apply justify-end pr-12; }
+
+        .icon-shadow { filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+        
+        /* Scrollbar Hide */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="command-console-bg text-white flex flex-col h-screen">
+    <div class="circuit-pattern"></div>
+    
+    <!-- HEADER -->
+    <div class="px-6 pt-4 pb-2 z-30 relative shrink-0">
+        <!-- Status Bar Fake -->
+        <div class="flex justify-between items-center opacity-60 mb-2 text-[10px] font-bold">
+            <span>09:41</span>
+            <div class="flex gap-1">
+                <span class="material-symbols-outlined text-xs">wifi</span>
+                <span class="material-symbols-outlined text-xs">battery_full</span>
+            </div>
+        </div>
+
+        <div class="metallic-panel rounded-2xl p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="http://127.0.0.1:5000/dashboard-anak" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors border border-white/20 text-success">
+                    <span class="material-symbols-outlined font-bold">arrow_back</span>
+                </a>
+                <div>
+                    <h2 class="text-[10px] uppercase tracking-widest text-circuit font-black">Mode Operasi</h2>
+                    <h1 class="text-xl font-black leading-none drop-shadow-md">Peta Misi</h1>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="w-10 h-10 rounded-full border-2 border-success overflow-hidden bg-metal shadow-[0_0_10px_rgba(0,242,255,0.4)]">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjVff-iZlHMR2vgO_WJTjbZ_HuoDcsc_LFamaRUdz9Aw8OmPS9GJRF2AeEC6nlJxbg0WB5uR7UaMH0XrPtun5nnlX00nAvH7KDFZl982h8BBGoMslLuXG8T_OFAe90sjr-dCb6zwLveom44OsIdD_vkCLvRInTALvpLHefsf-GLvhz-VYfsgtL1OdXxy_nYridwoXa3w4faDsp9s578mWopCcjjnL6miIAw0jlxDejbM1SCbOoGtYwf55P5U0O-MdjlG_gv3NQlm0" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAP CONTAINER (Scrollable) -->
+    <main class="flex-1 overflow-y-auto no-scrollbar relative z-10 px-4 pb-32 flex flex-col-reverse items-center gap-12 pt-10">
+        
+        <!-- Garis Vertikal Samar di Tengah Background -->
+        <div class="absolute top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-white/10 to-transparent left-1/2 -translate-x-1/2 z-0 dashed-line"></div>
+
+        <!-- === KOTA 3 (Locked) === -->
+        <div class="w-full flex flex-col items-center gap-6 relative z-10 opacity-60">
+            <div class="metallic-panel px-6 py-2 rounded-full border-gray-600 bg-metal/80">
+                <span class="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Kota 3: Syntax City</span>
+            </div>
+            
+            <div class="w-full flex row-center">
+                <div class="level-btn locked">
+                    <span class="material-symbols-outlined text-3xl">lock</span>
+                </div>
+            </div>
+            <div class="w-full flex row-center">
+                <div class="level-btn locked">
+                    <span class="material-symbols-outlined text-3xl">lock</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- === KOTA 2 (Locked) === -->
+        <div class="w-full flex flex-col items-center gap-8 relative z-10 opacity-70">
+            <div class="metallic-panel px-6 py-2 rounded-full border-pink-500/30 bg-pink-900/40">
+                <span class="text-xs font-black uppercase tracking-[0.2em] text-pink-300">Kota 2: Cyber Lexicon</span>
+            </div>
+
+            <div class="w-full flex row-center">
+                <div class="level-btn locked">
+                    <span class="material-symbols-outlined text-3xl">lock</span>
+                </div>
+            </div>
+            
+            <div class="w-full flex row-left">
+                <div class="level-btn locked">
+                    <span class="material-symbols-outlined text-3xl">lock</span>
+                </div>
+            </div>
+
+            <div class="w-full flex row-center">
+                <div class="level-btn locked">
+                    <span class="material-symbols-outlined text-3xl">lock</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- === KOTA 1 (Active) === -->
+        <div class="w-full flex flex-col items-center gap-10 relative z-10">
+            <div class="metallic-panel px-6 py-2 rounded-full border-glow/50 bg-orange-900/30 shadow-[0_0_15px_rgba(255,158,0,0.2)]">
+                <span class="text-xs font-black uppercase tracking-[0.2em] text-glow">Kota 1: Sector Alpha</span>
+            </div>
+
+            <!-- Level 1 (Completed) -->
+            <div class="w-full flex row-center">
+                <button onclick="openLevel(1, 'Kalibrasi Visual', 'Review: Bentuk Dasar')" class="level-btn completed hover:scale-110">
+                    <span class="text-2xl font-black font-display">1</span>
+                    <div class="flex text-[8px] text-yellow-300 mt-1">
+                        <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">star</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Level 2 (Completed) -->
+            <div class="w-full flex row-left">
+                <button onclick="openLevel(2, 'Protokol Cermin', 'Review: Huruf b dan d')" class="level-btn completed hover:scale-110">
+                    <span class="text-2xl font-black font-display">2</span>
+                    <div class="flex text-[8px] text-yellow-300 mt-1">
+                        <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-[10px] text-white/30" style="font-variation-settings: 'FILL' 1">star</span>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Level 3 (Completed) -->
+            <div class="w-full flex row-center">
+                <button onclick="openLevel(3, 'Sandi Vokal', 'Review: A, I, U, E, O')" class="level-btn completed hover:scale-110">
+                    <span class="text-2xl font-black font-display">3</span>
+                    <div class="flex text-[8px] text-yellow-300 mt-1">
+                        <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1">star</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Level 4 (ACTIVE) -->
+            <div class="w-full flex row-right relative">
+                 <!-- Ripple Effect Behind -->
+                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="w-32 h-32 rounded-full border border-glow/30 animate-ping"></div>
+                 </div>
+                <button id="currentLevel" onclick="openLevel(4, 'Sinyal Konsonan', 'Misi: Pelajari huruf B, C, D untuk memperbaiki radar.')" class="level-btn active group">
+                    <span class="material-symbols-outlined text-4xl animate-bounce" style="font-variation-settings: 'FILL' 1">play_arrow</span>
+                    <span class="absolute -bottom-8 bg-black/50 text-[10px] px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/20 text-white font-bold tracking-wider">LVL 4</span>
+                </button>
+            </div>
+
+            
+            <!-- Start Point Indicator -->
+            <div class="text-[10px] font-black uppercase text-white/30 tracking-widest mt-[-20px]">Basis Operasi</div>
+        </div>
+
+    </main>
+
+    <!-- FLOATING ACTION BUTTON (Pengganti tombol bawah original) -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-40">
+        <button onclick="startCurrentLevel()" class="w-full metallic-panel bg-gradient-to-r from-blue-600 to-blue-800 border border-blue-400 p-1 rounded-2xl shadow-[0_10px_30px_rgba(37,99,235,0.5)] group active:scale-95 transition-transform">
+            <div class="flex items-center justify-between px-2 py-3 bg-black/20 rounded-xl">
+                <div class="flex items-center gap-3 pl-2">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center shadow-lg group-hover:animate-spin">
+                        <span class="material-symbols-outlined text-white">settings_motion_mode</span>
+                    </div>
+                    <div class="text-left">
+                        <div class="text-[10px] text-blue-200 uppercase tracking-wider font-bold">Misi Selanjutnya</div>
+                        <div class="text-lg font-black italic text-white leading-none">LEVEL 4: START</div>
+                    </div>
+                </div>
+                <div class="pr-3">
+                    <span class="material-symbols-outlined text-3xl text-white animate-pulse">chevron_right</span>
+                </div>
+            </div>
+        </button>
+    </div>
+
+    <!-- MODAL OVERLAY (Style LexyPlay) -->
+    <div id="overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity duration-300 opacity-0" onclick="closeModal()"></div>
+    
+    <div id="levelModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] w-[85%] max-w-sm z-[60] hidden transition-all duration-300 opacity-0 scale-90">
+        <!-- Robot Decor -->
+        <div class="absolute -top-12 left-1/2 -translate-x-1/2 animate-float z-20">
+             <div class="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-300 rounded-2xl metallic-panel shadow-lg flex flex-col items-center justify-center border-b-4 border-slate-400">
+                <div class="flex gap-2 mb-0.5">
+                    <div class="w-3.5 h-3.5 bg-glow rounded-full shadow-[0_0_8px_#ff9e00] flex items-center justify-center">
+                        <div class="w-1 h-1 bg-white rounded-full opacity-80"></div>
+                    </div>
+                    <div class="w-3.5 h-3.5 bg-glow rounded-full shadow-[0_0_8px_#ff9e00] flex items-center justify-center">
+                        <div class="w-1 h-1 bg-white rounded-full opacity-80"></div>
+                    </div>
+                </div>
+                <div class="w-8 h-1 bg-brand/30 rounded-full mt-1 overflow-hidden">
+                    <div class="h-full bg-brand w-1/2 animate-pulse"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="metallic-panel bg-metal/95 rounded-3xl p-6 pt-10 text-center border-white/20 shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-3 right-3 text-white/50 hover:text-white transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <h3 id="modalTitle" class="text-xl font-black text-white uppercase tracking-wider mb-2 drop-shadow-md">Judul Level</h3>
+            <div class="w-16 h-1 bg-gradient-to-r from-transparent via-glow to-transparent mx-auto mb-4"></div>
+            
+            <p id="modalDesc" class="text-sm font-semibold text-gray-300 mb-6 leading-relaxed font-sans">Deskripsi misi...</p>
+            
+            <button onclick="window.location.href='http://127.0.0.1:5000/example-lesson'" class="w-full py-4 rounded-xl bg-gradient-to-r from-glow to-orange-600 font-black text-white uppercase tracking-widest shadow-[0_5px_20px_rgba(255,158,0,0.4)] hover:brightness-110 active:scale-95 transition-all border border-white/20 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">rocket_launch</span>
+                Mainkan
+            </button>
+        </div>
+    </div>
+
+    <!-- <script>
+        // Data Level Aktif Saat Ini
+        const currentActiveLevel = {
+            id: 4,
+            title: 'Sinyal Konsonan',
+            desc: 'Agen! Radar kita rusak. Pelajari huruf B, C, dan D untuk memperbaikinya segera!'
+        };
+
+        // Fungsi tombol besar di bawah
+        function startCurrentLevel() {
+            openLevel(currentActiveLevel.id, currentActiveLevel.title, currentActiveLevel.desc);
+        }
+
+        // Fungsi klik node
+        function openLevel(level, title, desc) {
+            const modal = document.getElementById('levelModal');
+            const overlay = document.getElementById('overlay');
+            const titleEl = document.getElementById('modalTitle');
+            const descEl = document.getElementById('modalDesc');
+
+            titleEl.innerText = "Level " + level + ": " + title;
+            descEl.innerText = desc;
+            
+            // Tampilkan (remove hidden first)
+            overlay.classList.remove('hidden');
+            modal.classList.remove('hidden');
+
+            // Trigger reflow agar transition jalan
+            void modal.offsetWidth;
+
+            // Animasi Masuk
+            overlay.classList.remove('opacity-0');
+            modal.classList.remove('opacity-0', 'scale-90', '-translate-y-[40%]');
+            modal.classList.add('scale-100', '-translate-y-1/2');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('levelModal');
+            const overlay = document.getElementById('overlay');
+
+            // Animasi Keluar
+            overlay.classList.add('opacity-0');
+            modal.classList.remove('scale-100', '-translate-y-1/2');
+            modal.classList.add('opacity-0', 'scale-90', '-translate-y-[40%]');
+
+            // Tunggu animasi selesai baru hidden
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script> -->
+
+    <script>
+        // --- LOGIKA UTAMA: Auto Scroll ke Level Aktif ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const activeLevelBtn = document.getElementById('currentLevel');
+            
+            if (activeLevelBtn) {
+                // Beri jeda sedikit agar layout merender sempurna, lalu scroll
+                setTimeout(() => {
+                    activeLevelBtn.scrollIntoView({
+                        behavior: 'smooth', // Animasi halus
+                        block: 'center',    // Posisikan di tengah layar vertikal
+                        inline: 'center'
+                    });
+                }, 500); 
+            }
+        });
+
+        // --- DATA & LOGIKA GAME ---
+        
+        // Data Level Aktif Saat Ini
+        const currentActiveLevel = {
+            id: 4,
+            title: 'Sinyal Konsonan',
+            desc: 'Agen! Radar kita rusak. Pelajari huruf B, C, dan D untuk memperbaikinya segera!'
+        };
+
+        // Fungsi tombol besar di bawah
+        function startCurrentLevel() {
+            openLevel(currentActiveLevel.id, currentActiveLevel.title, currentActiveLevel.desc);
+        }
+
+        // Fungsi klik node
+        function openLevel(level, title, desc) {
+            const modal = document.getElementById('levelModal');
+            const overlay = document.getElementById('overlay');
+            const titleEl = document.getElementById('modalTitle');
+            const descEl = document.getElementById('modalDesc');
+
+            titleEl.innerText = "Level " + level + ": " + title;
+            descEl.innerText = desc;
+            
+            // Tampilkan (remove hidden first)
+            overlay.classList.remove('hidden');
+            modal.classList.remove('hidden');
+
+            // Trigger reflow agar transition jalan
+            void modal.offsetWidth;
+
+            // Animasi Masuk
+            overlay.classList.remove('opacity-0');
+            modal.classList.remove('opacity-0', 'scale-90', '-translate-y-[40%]');
+            modal.classList.add('scale-100', '-translate-y-1/2');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('levelModal');
+            const overlay = document.getElementById('overlay');
+
+            // Animasi Keluar
+            overlay.classList.add('opacity-0');
+            modal.classList.remove('scale-100', '-translate-y-1/2');
+            modal.classList.add('opacity-0', 'scale-90', '-translate-y-[40%]');
+
+            // Tunggu animasi selesai baru hidden
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
